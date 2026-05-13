@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>SSE 客户端</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: system-ui, sans-serif;
+      background: #f5f5f5;
+    }
+    #status {
+      margin-bottom: 12px;
+      font-size: 14px;
+      color: #666;
+    }
+    #status.connected { color: green; }
+    #status.disconnected { color: red; }
+    #messages {
+      width: 400px;
+      max-height: 400px;
+      overflow-y: auto;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 12px;
+    }
+    .message {
+      padding: 6px 0;
+      border-bottom: 1px solid #eee;
+      font-size: 14px;
+    }
+    .message:last-child { border-bottom: none; }
+    .message .id { color: #999; margin-right: 8px; }
+    .message .time { color: #999; font-size: 12px; float: right; }
+  </style>
+</head>
+<body>
+  <div id="status" class="disconnected">未连接</div>
+  <div id="messages"></div>
+
+  <script>
+    const statusEl = document.getElementById('status');
+    const messagesEl = document.getElementById('messages');
+
+    const eventSource = new EventSource('http://localhost:3000/events');
+
+    eventSource.onopen = () => {
+      statusEl.textContent = '已连接';
+      statusEl.className = 'connected';
+    };
+
+    eventSource.onmessage = (event) => {
+      // 收到 [DONE] 标记说明服务端主动结束，关闭连接阻止自动重连
+      if (event.data === '[DONE]') {
+        statusEl.textContent = '服务端已关闭连接';
+        statusEl.className = 'disconnected';
+        eventSource.close();
+        return;
+      }
+
+      const data = JSON.parse(event.data);
+      const div = document.createElement('div');
+      div.className = 'message';
+      div.innerHTML = `
+        <span class="id">#${event.lastEventId}</span>
+        <span>${data.message}</span>
+        <span class="time">${new Date(data.timestamp).toLocaleTimeString()}</span>
+      `;
+      messagesEl.appendChild(div);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    };
+
+    eventSource.onerror = () => {
+      statusEl.textContent = '连接断开，正在重连...';
+      statusEl.className = 'disconnected';
+    };
+  </script>
+</body>
+</html>
