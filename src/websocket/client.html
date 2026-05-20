@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>WebSocket 客户端</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: system-ui, sans-serif;
+      background: #f5f5f5;
+    }
+    #status {
+      margin-bottom: 12px;
+      font-size: 14px;
+      color: #666;
+    }
+    #status.connected { color: green; }
+    #status.disconnected { color: red; }
+    #messages {
+      width: 400px;
+      max-height: 400px;
+      overflow-y: auto;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+    .message {
+      padding: 6px 0;
+      border-bottom: 1px solid #eee;
+      font-size: 14px;
+    }
+    .message:last-child { border-bottom: none; }
+    .message .type {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-size: 12px;
+      margin-right: 6px;
+    }
+    .type.welcome { background: #e8f5e9; color: #2e7d32; }
+    .type.push { background: #e3f2fd; color: #1565c0; }
+    .type.echo { background: #fff3e0; color: #e65100; }
+    .message .time { color: #999; font-size: 12px; float: right; }
+    #input-area {
+      display: flex;
+      gap: 8px;
+    }
+    #input-area input {
+      width: 300px;
+      padding: 6px 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    #input-area button {
+      padding: 6px 16px;
+      border: none;
+      border-radius: 4px;
+      background: #1976d2;
+      color: #fff;
+      cursor: pointer;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div id="status" class="disconnected">未连接</div>
+  <div id="messages"></div>
+  <div id="input-area">
+    <input id="input" type="text" placeholder="输入消息后回车发送" disabled>
+    <button id="btn" disabled>发送</button>
+  </div>
+
+  <script>
+    const statusEl = document.getElementById('status');
+    const messagesEl = document.getElementById('messages');
+    const inputEl = document.getElementById('input');
+    const btnEl = document.getElementById('btn');
+
+    function appendMessage(data) {
+      const div = document.createElement('div');
+      div.className = 'message';
+      div.innerHTML = `
+        <span class="type ${data.type}">${data.type}</span>
+        <span>${data.message}</span>
+        <span class="time">${new Date(data.timestamp).toLocaleTimeString()}</span>
+      `;
+      messagesEl.appendChild(div);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function connect() {
+      const ws = new WebSocket('ws://localhost:3001');
+
+      ws.onopen = () => {
+        statusEl.textContent = '已连接';
+        statusEl.className = 'connected';
+        inputEl.disabled = false;
+        btnEl.disabled = false;
+      };
+
+      ws.onmessage = (event) => {
+        appendMessage(JSON.parse(event.data));
+      };
+
+      ws.onclose = () => {
+        statusEl.textContent = '连接断开，3 秒后重连...';
+        statusEl.className = 'disconnected';
+        inputEl.disabled = true;
+        btnEl.disabled = true;
+        setTimeout(connect, 3000);
+      };
+
+      ws.onerror = () => {
+        ws.close();
+      };
+
+      // 发送消息
+      function sendMessage() {
+        const text = inputEl.value.trim();
+        if (text && ws.readyState === WebSocket.OPEN) {
+          ws.send(text);
+          inputEl.value = '';
+        }
+      }
+
+      btnEl.onclick = sendMessage;
+      inputEl.onkeydown = (e) => {
+        if (e.key === 'Enter') sendMessage();
+      };
+    }
+
+    connect();
+  </script>
+</body>
+</html>
