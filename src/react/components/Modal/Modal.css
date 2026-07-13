@@ -1,0 +1,60 @@
+/* 遮罩层：固定覆盖整个视口，半透明背景并居中卡片 */
+.container {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* 模态框卡片：白底、圆角、阴影 */
+.modal {
+  width: 24rem;
+  max-width: 90vw;
+  background-color: #fff;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.2);
+}
+
+/* 头部：标题与关闭按钮 */
+.modal > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  font-weight: bold;
+  border-bottom: 1px solid #eee;
+}
+
+/* 内容区 */
+.modal > p {
+  margin: 0;
+  padding: 1rem;
+}
+
+/* 底部：操作按钮右对齐 */
+.modal > footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-top: 1px solid #eee;
+}
+
+/* 通用按钮样式 */
+.modal button {
+  padding: 0.25rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+/* 头部关闭按钮：无边框纯文本，覆盖通用样式 */
+.modal > header button {
+  border: none;
+  background: none;
+  font-size: 1.25rem;
+  padding: 0;
+}

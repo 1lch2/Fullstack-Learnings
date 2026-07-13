@@ -26,7 +26,7 @@
 
     /* Modules */
     "module": "node16" /* Specify what module code is generated. */,
-    "rootDir": "src" /* Specify the root folder within your source files. */,
+    "rootDir": "." /* 显式指定，覆盖 src/ 与根目录的 vite.config.ts */,
     "moduleResolution": "nodenext" /* Specify how TypeScript looks up a file from a given module specifier. */,
     // "baseUrl": "./",                                  /* Specify the base directory to resolve non-relative module names. */
     // "paths": {},                                      /* Specify a set of entries that re-map imports to additional lookup locations. */
@@ -99,5 +99,7 @@
     /* Completeness */
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true /* Skip type checking all .d.ts files. */
-  }
+  },
+  "include": ["src", "vite.config.ts"],
+  "exclude": ["src/react", "node_modules"]
 }

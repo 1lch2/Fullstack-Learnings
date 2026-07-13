@@ -6,7 +6,12 @@
   "main": "",
   "scripts": {
     "rand": "node src/script/random_challenge.js",
-    "rand100": "node src/script/random_top100.js"
+    "rand100": "node src/script/random_top100.js",
+    "dev": "vite",
+    "build": "tsc -p tsconfig.app.json && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "typecheck:react": "tsc -p tsconfig.app.json"
   },
   "repository": {
     "type": "git",
@@ -19,13 +24,19 @@
   },
   "homepage": "https://github.com/1lch2/JavaScript_Exercise#readme",
   "devDependencies": {
+    "@types/node": "^26.1.1",
     "@types/react": "^18.3.27",
+    "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react": "^6.0.3",
     "eslint": "^10.1.0",
-    "tsx": "^4.21.0"
+    "tsx": "^4.21.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.1.4"
   },
   "dependencies": {
     "axios": ">=1.15.2",
     "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "ws": "^8.20.1"
   }
 }

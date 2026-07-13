@@ -80,6 +80,8 @@ import axios from "axios";
 
 const ITEMS_API_URL = "http://localhost:3001/api/items";
 const DEBOUNCE_DELAY = 500;
+const setTimeout = window.setTimeout;
+const clearTimeout = window.clearTimeout;
 
 // the exported component can be either a function or a class
 const debounce = (fn: Function, timeout: number) => {
