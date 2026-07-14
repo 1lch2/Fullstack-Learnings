@@ -185,4 +185,70 @@ console.log(g()); // ❌ Error, would crash
 // TODO:
 ```
 
+### 多态 this
 
+以我自己的狗屎代码为例：
+
+```ts
+export class TreeNode {
+  _TYPE_NAME = this.constructor.name;
+
+  val: number;
+  left?: TreeNode | null;
+  right?: TreeNode | null;
+
+  constructor(
+    val: number | undefined,
+    left: TreeNode | null | undefined,
+    right: TreeNode | null | undefined,
+  ) {
+    this.val = val === undefined ? 0 : val;
+    this.left = left === undefined ? null : left;
+    this.right = right === undefined ? null : right;
+  }
+
+  /**
+   * 深度优先遍历
+   */
+  depthFirstTraversal(type: "recur" | "stack") {
+    const recur = () => {
+      let res: any[] = [];
+
+      // 这里函数签名中root类型不是 TreeNode 而是 this
+      const dfs = (root: this | null | undefined) => {
+        if (root == null) {
+          return;
+        }
+        res.push(root.val);
+
+        // 类型“TreeNode | null | undefined”的参数不能赋给类型“this | null | undefined”的参数。
+        //     不能将类型“TreeNode”分配给类型“this”。
+        //         "TreeNode" 可赋给 "this" 类型的约束，但可以使用约束 "TreeNode" 的其他子类型实例化 "this"。
+        dfs(root.left);
+        dfs(root.right);
+      };
+
+      dfs(this);
+      return res;
+    };
+  }
+}
+```
+
+上面 dfs 函数的签名中，root的类型为 `this` 而不是 TreeNode，虽然这俩在 `TreeNode` 类中确实是一回事。
+
+TS提示中提到 `"TreeNode" 可赋给 "this" 类型的约束` 说明类型检查约束通过了，但第二句提示依旧有问题。
+
+因为 `this` 是多态的，它代表"调用该方法时的具体子类型"，而不一定是 `TreeNode` 本身。
+
+假设存在一个子类：
+
+```ts
+class SpecialNode extends TreeNode {
+  // ...
+}
+```
+
+当在 `SpecialNode` 实例上调用 `depthFirstTraversal` 时，方法内部的 `this` 会被推断为 `SpecialNode`，于是 dfs 的参数类型随之变成 `SpecialNode | null | undefi`ned。但 `root.left` 的声明类型仍是 `TreeNode`（基类），无法保证它一定是一个 `SpecialNode`。把一个仅声明为基类的值传给需要"具体子类型"的参数，TypeScript 判定不安全并拒绝。
+
+这与 `Array.from(iterable: ArrayLike<T>): T[]` 等场景同理——只要签名里出现 this，TS 就会考虑子类化的可能性。

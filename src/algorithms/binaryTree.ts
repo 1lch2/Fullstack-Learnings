@@ -1,33 +1,30 @@
 /**
  * Binary tree node.
  */
-class TreeNode {
-  _TYPE_NAME = this.constructor.name;
+export class TreeNode {
+  val: number;
+  left?: TreeNode | null;
+  right?: TreeNode | null;
 
-  /**
-   * Constructor
-   * @param {Number} val value of the node
-   * @param {TreeNode} left left sub-tree node
-   * @param {TreeNode} right right sub-tree node
-   */
-  constructor(val, left, right) {
-    this.val = (val === undefined ? 0 : val);
-    this.left = (left === undefined ? null : left);
-    this.right = (right === undefined ? null : right);
+  constructor(
+    val: number | undefined,
+    left?: TreeNode | null,
+    right?: TreeNode | null,
+  ) {
+    this.val = val === undefined ? 0 : val;
+    this.left = left === undefined ? null : left;
+    this.right = right === undefined ? null : right;
   }
 
   /**
-   * 深度优先遍历
-   * 
-   * a.k.a. 先序遍历
-   * @param {String} type "recur" or "stack"
-   * @returns {Number[]} result
+   * 深度优先遍历（先序遍历）
    */
-  dfs(type) {
+  depthFirstTraversal(type: "recur" | "stack"): number[] {
     // 递归模式
     const recur = () => {
-      let res = [];
-      const dfs = (root) => {
+      let res: any[] = [];
+
+      const dfs = (root: TreeNode | null | undefined) => {
         if (root == null) {
           return;
         }
@@ -35,65 +32,57 @@ class TreeNode {
         dfs(root.left);
         dfs(root.right);
       };
+
       dfs(this);
       return res;
     };
 
     // 迭代模式
-    const stack = () => {
-      let res = [];
-      let stack = [];
-      let root = this;
+    const stack = (): number[] => {
+      let res: number[] = [];
+      let stack: TreeNode[] = [];
+      let root: TreeNode = this;
 
       if (root === null) {
-        return stack;
+        return [];
       }
 
       stack.push(root);
       while (stack.length !== 0) {
-        let current = stack.pop();
-        res.push(current.val);
+        let current = stack.pop()!;
+        res.push(current?.val);
         // 右节点先入栈
-        if (current.right !== null) {
-          stack.push(current.right);
+        if (current.right != null) {
+          stack.push(current?.right);
         }
-        if (current.left !== null) {
-          stack.push(current.left);
+        if (current.left != null) {
+          stack.push(current?.left);
         }
       }
       return res;
     };
 
-    if (type === "recur") {
-      return recur();
-    } else if (type === "stack") {
-      return stack();
-    } else {
-      console.error("not valid type.");
-    }
+    return type === "recur" ? recur() : stack();
   }
 
   /**
-   * 广度优先遍历
-   * 
-   * a.k.a. 层序遍历
-   * @returns {Number[]} 遍历结果数组
+   * 广度优先遍历（层序遍历）
    */
-  bfs() {
-    let res = [];
-    let root = this;
+  bfs(): number[] {
+    let res: number[] = [];
+    let root: TreeNode = this;
     if (root == null) {
       return res;
     }
 
     let queue = [root];
     while (queue.length != 0) {
-      let current = queue.shift();
+      let current = queue.shift()!;
       res.push(current.val);
-      if (current.left !== null) {
+      if (current.left != null) {
         queue.push(current.left);
       }
-      if (current.right !== null) {
+      if (current.right != null) {
         queue.push(current.right);
       }
     }
@@ -102,11 +91,10 @@ class TreeNode {
 
   /**
    * 每层节点存入一个数组的层序遍历
-   * @returns {Number[][]} BFS results by level
    */
-  levelOrderTraverse() {
-    let res = [];
-    let root = this;
+  levelOrderTraverse(): number[][] {
+    let res: number[][] = [];
+    let root: TreeNode = this;
     if (root == null) {
       return res;
     }
@@ -117,7 +105,7 @@ class TreeNode {
       let l = queue.length; // 记录当前层的节点数
       while (l > 0) {
         // 将下一层的节点压入队列
-        let current = queue.shift();
+        let current = queue.shift()!;
         temp.push(current.val);
         if (current.left != null) {
           queue.push(current.left);
@@ -134,15 +122,13 @@ class TreeNode {
 
   /**
    * 后序遍历
-   * @param {String} type "recur" or "stack"
-   * @returns {Number[]} result
    */
-  postOrderTraverse(type) {
-    let res = [];
+  postOrderTraverse(type: "recur" | "stack"): number[] {
+    let res: number[] = [];
 
     // 递归方法
     const recur = () => {
-      const traverse = (root) => {
+      const traverse = (root: TreeNode | null | undefined) => {
         if (root == null) {
           return;
         }
@@ -160,7 +146,7 @@ class TreeNode {
       let root = this;
       stack.push(root);
       while (stack.length !== 0) {
-        let current = stack.pop();
+        let current: TreeNode | number = stack.pop()!;
         // 避免将空节点压入栈
         if (current === null) {
           continue;
@@ -169,7 +155,7 @@ class TreeNode {
         // Credit: https://leetcode-cn.com/problems/binary-tree-inorder-traversal/solution/
         //         yan-se-biao-ji-fa-yi-chong-tong-yong-qie-jian-ming/
         // 仅当节点未访问过（判断节点类型）时入栈
-        if (current.constructor.name === this._TYPE_NAME) {
+        if (current instanceof TreeNode) {
           // 按反方向入栈
           stack.push(current.val); // 压入值类型，标记为已访问
           stack.push(current.right);
@@ -182,27 +168,21 @@ class TreeNode {
       return res;
     };
 
-    if (type === "recur") {
-      return recur();
-    } else if (type === "stack") {
-      return stack();
-    } else {
-      console.error("not valid type");
-    }
+    return type === "recur" ? recur() : stack();
   }
 
   /**
    * 中序遍历
-   * 
+   *
    * @param {String} type 遍历方法, "recur" or "stack"
    */
-  inorderTraverse(type) {
-    let res = [];
+  inorderTraverse(type: "recur" | "stack"): number[] {
+    let res: number[] = [];
 
     // 递归方法
     const recur = () => {
-      let root = this;
-      const traverse = (root) => {
+      let root: TreeNode = this;
+      const traverse = (root: TreeNode | null | undefined) => {
         if (root == null) {
           return;
         }
@@ -216,14 +196,14 @@ class TreeNode {
 
     // 迭代方法
     const stack = () => {
-      let root = this;
-      let stack = [root];
+      let root: TreeNode | null | undefined = this;
+      let stack: Array<TreeNode | number | null | undefined> = [root];
       while (stack.length !== 0) {
         let current = stack.pop();
         if (current == null) {
           continue;
         }
-        if (current.constructor.name === this._TYPE_NAME) {
+        if (current instanceof TreeNode) {
           stack.push(current.right);
           stack.push(current.val);
           stack.push(current.left);
@@ -234,33 +214,24 @@ class TreeNode {
       return res;
     };
 
-    if (type === "recur") {
-      return recur();
-    } else if (type === "stack") {
-      return stack();
-    } else {
-      console.error("not valid type");
-    }
+    return type === "recur" ? recur() : stack();
   }
   /**
-   * Encodes a tree to a single string.
-   *
-   * @param {TreeNode} root root node
-   * @return {string} serialized string of nodes
+   * Encodes a tree to an array.
    */
-  serialize() {
-    let root = this;
+  serialize(): Array<"null" | number> {
+    let root: TreeNode = this;
     if (root == null) {
       return [];
     }
 
-    let queue = [root];
-    let res = [];
+    let queue: Array<TreeNode | null | undefined> = [root];
+    let res: Array<"null" | number> = [];
 
     while (queue.length > 0) {
-      let current = queue.shift();
+      let current: TreeNode | undefined | null = queue.shift();
       // 将null也推入队列
-      if (current !== null) {
+      if (current != null) {
         res.push(current.val);
         queue.push(current.left);
         queue.push(current.right);
@@ -271,27 +242,23 @@ class TreeNode {
     while (res[res.length - 1] === "null") {
       res.pop();
     }
-    return res.join(" ");
+    return res;
   }
 
   /**
    * Decodes your encoded data to tree.
-   *
-   * @param {string} data
-   * @return {TreeNode} root node
    */
-  deserialize(data) {
-    if (data.length === 0 || data.trim() === "") {
+  deserialize(nodeList: Array<"null" | number>): TreeNode | null {
+    if (nodeList.length === 0) {
       return null;
     }
 
-    let nodeList = data.split(" ");
-    let root = new TreeNode(nodeList.shift());
+    let root = new TreeNode(nodeList.shift() as number);
     let queue = [root];
 
     // 按层序遍历顺序弹队列重建树
     while (nodeList.length > 0) {
-      let currentRoot = queue.shift();
+      let currentRoot = queue.shift()!;
       let leftVal = nodeList.shift();
       let rightVal = nodeList.shift();
 
@@ -308,7 +275,6 @@ class TreeNode {
     }
     return root;
   }
-
 }
 
 export default TreeNode;
@@ -334,7 +300,7 @@ const test = () => {
   l1.right = l4;
   l3.left = l5;
 
-  let traverseRes = root.dfs("recur");
+  let traverseRes = root.depthFirstTraversal("recur");
   console.log(traverseRes);
 
   let serialized = root.serialize();
