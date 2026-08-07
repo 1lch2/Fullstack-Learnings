@@ -1,0 +1,4 @@
+interface:
+  display_name: "Repository Note Writing"
+  short_description: "Write repository notes in established Markdown style"
+  default_prompt: "Use $note-writing to create or revise a note under note/ in the repository style."
