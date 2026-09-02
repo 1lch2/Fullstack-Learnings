@@ -15,14 +15,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/1lch2/JavaScript_Exercise.git"
+    "url": "git+https://github.com/1lch2/Fullstack-Learnings.git"
   },
   "author": "1lch2@163.com",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/1lch2/JavaScript_Exercise/issues"
-  },
-  "homepage": "https://github.com/1lch2/JavaScript_Exercise#readme",
+  "homepage": "https://github.com/1lch2/Fullstack-Learnings#readme",
   "devDependencies": {
     "@types/node": "^26.1.1",
     "@types/react": "^18.3.27",
