@@ -1,24 +1,26 @@
 # Fullstack-Learnings
 
-Just a personal repository for ~~frontend-related~~ fullstack learning. Bro it's 2026, frontend is dead.
+个人仓库，存点各种笔记，面试常见手撕代码实现，还有leetcode题解，面试题解什么的。主要是前端和 JS/TS，也有一些后端。
 
-## Notes
+## 笔记
 
-See directory `/note`. Notes are categorized by language and framework. Note that some notes are not completed, which will be finished in future, or never.
+`/note` 目录下按主题分目录存放。配图资源在 `/note/static`。
 
-## Run Java
-
-Install [Extension Pack for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack) to run and debug Java code.
-
-## Practice
+## 代码
 
 ### LeetCode
 
-See `/src/leetcode` for leetcode problem solutions implemented in vanilla JS and TS. All solutions are categorized by tag.
+`/src/leetcode` 目录，只用纯 JS/TS 实现。
 
-## Handy npm scripts for LeetCode revision
+### 面试题
 
-- `npm run rand`: Open a random local LeetCode problem in VSCode.
-- `npm run rand100`: Open a random top 100 LeetCode problem in VSCode. Top 100 ranking data is fetched from `http://codetop.cc/home` with local cache.
+`/src/challenges` 目录，按面试公司命名。
 
-Script source files are located in `/src/script`.
+另外在 `/src/react/challenges` 里也有面试题。
+
+### 手撕代码八股
+
+- 基础数据结构和算法： `/src/algorithms`
+- 前端常见设计模式： `/src/designPattern`
+- 前端常用工具函数： `/src/functions`
+- 常见CSS布局： `/src/css`
